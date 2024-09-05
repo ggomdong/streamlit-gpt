@@ -129,8 +129,6 @@ with st.sidebar:
                 )
             except:
                 st.error("파일 업로드에 실패하였습니다.")
-                
-            st.success("파일 업로드에 성공하였습니다.")
         else:
             st.warning("올바른 OPENAI_API_KEY를 입력하세요.")
             key = ""
