@@ -50,7 +50,7 @@ def is_valid(key):
 @st.cache_resource(show_spinner="Embedding file...")
 def embed_file(file, key):
     # .cache 폴더가 없으면 생성해준다.
-    file_folder = './.cache'
+    file_folder = './.cache/files'
     
     if not os.path.exists(file_folder):
         os.makedirs(file_folder)

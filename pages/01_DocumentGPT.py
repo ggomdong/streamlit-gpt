@@ -9,6 +9,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.callbacks.base import BaseCallbackHandler
 import streamlit as st
 import requests
+import os
 
 st.set_page_config(
     page_title="DocumentGPT",
@@ -48,6 +49,12 @@ def is_valid(key):
 # cache_data 사용시 UnserializableReturnValueError 가 발생하여 변경
 @st.cache_resource(show_spinner="Embedding file...")
 def embed_file(file, key):
+    # .cache 폴더가 없으면 생성해준다.
+    file_folder = './.cache/files'
+    
+    if not os.path.exists(file_folder):
+        os.makedirs(file_folder)
+
     file_content = file.read()
     file_path = f"./.cache/files/{file.name}"
     # st.write(file_content, file_path)
