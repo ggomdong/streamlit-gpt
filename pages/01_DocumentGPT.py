@@ -8,8 +8,7 @@ from langchain.vectorstores.faiss import FAISS
 from langchain.chat_models import ChatOpenAI
 from langchain.callbacks.base import BaseCallbackHandler
 import streamlit as st
-import requests
-import os
+import requests, os
 
 st.set_page_config(
     page_title="DocumentGPT",
@@ -47,7 +46,7 @@ def is_valid(key):
 
 
 # cache_data 사용시 UnserializableReturnValueError 가 발생하여 변경
-@st.cache_resource(show_spinner="Embedding file...")
+@st.cache_resource(show_spinner="파일 임베딩 중...")
 def embed_file(file, key):
     # .cache 폴더가 없으면 생성해준다.
     file_folder = './.cache/files'
@@ -56,7 +55,7 @@ def embed_file(file, key):
         os.makedirs(file_folder)
 
     file_content = file.read()
-    file_path = f"./.cache/files/{file.name}"
+    file_path = f"{file_folder}/{file.name}"
     # st.write(file_content, file_path)
     with open(file_path, "wb") as f:
         f.write(file_content)
@@ -109,7 +108,7 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-st.title("DocumentGPT")
+st.title("📃DocumentGPT")
 
 st.markdown(
     """
@@ -119,7 +118,7 @@ st.markdown(
 
 with st.sidebar:
     st.markdown("""
-    Github Repo : https://github.com/ggomdong/fullstack-gpt
+    Github Repo : https://github.com/ggomdong/streamlit-gpt
     """)
 
     key = st.text_input("OPEN_API_KEY", placeholder="OPENAI_API_KEY를 입력해주세요.", type="password")
