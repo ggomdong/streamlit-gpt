@@ -1,13 +1,14 @@
 from langchain.document_loaders import SitemapLoader
 from langchain.schema.runnable import RunnableLambda, RunnablePassthrough
+from langchain.storage import LocalFileStore
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores.faiss import FAISS
-from langchain.embeddings import OpenAIEmbeddings
+from langchain.embeddings import OpenAIEmbeddings, CacheBackedEmbeddings
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.callbacks.base import BaseCallbackHandler
 import streamlit as st
-import requests
+import requests, os
 
 
 class ChatCallbackHandler(BaseCallbackHandler):
@@ -132,6 +133,14 @@ def parse_page(soup):
 
 @st.cache_resource(show_spinner="웹사이트 로딩 중...")
 def load_website(url, key):
+    # .cache 폴더가 없으면 생성해준다.
+    file_folder = './.cache/embeddings/site'
+    
+    if not os.path.exists(file_folder):
+        os.makedirs(file_folder)
+
+    cache_dir = LocalFileStore(f"{file_folder}")
+
     splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
         chunk_size=1000,
         chunk_overlap=200,
@@ -148,7 +157,9 @@ def load_website(url, key):
     )
     loader.requests_per_second = 2
     docs = loader.load_and_split(text_splitter=splitter)
-    vector_store = FAISS.from_documents(docs, OpenAIEmbeddings(api_key=key))
+    embeddings = OpenAIEmbeddings(api_key=key)
+    cached_embeddings = CacheBackedEmbeddings.from_bytes_store(embeddings, cache_dir)
+    vector_store = FAISS.from_documents(docs, cached_embeddings)
     return vector_store.as_retriever()
 
 
