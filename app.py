@@ -25,5 +25,6 @@ st.markdown(
     - [X] [DocumentGPT](/DocumentGPT) : 문서의 내용에 대해 대화합니다.
     - [X] [QuizGPT](/QuizGPT) : 문서 혹은 위키피디아를 통해 퀴즈를 냅니다.
     - [X] [SiteGPT](/SiteGPT) : 웹사이트의 내용에 대해 대화합니다.
+    - [X] [ResearchGPT](/ResearchGPT) : 주제에 대한 조사를 수행합니다.
     """
 )
